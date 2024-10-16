@@ -1,7 +1,7 @@
 // controllers/comicBookController.js
 const ComicBook = require('../models/ComicBook');
 
-// Create a new Comic Book
+
 exports.createComicBook = async (req, res) => {
     try {
         const comic = new ComicBook(req.body);
@@ -12,19 +12,18 @@ exports.createComicBook = async (req, res) => {
     }
 };
 
-// Get all Comic Books with Pagination, Filtering, Sorting
+//  Pagination, Filtering, Sorting
 exports.getAllComicBooks = async (req, res) => {
     try {
         const { page = 1, limit = 10, sortBy = 'bookName', order = 'asc', ...filters } = req.query;
 
-        // Build filter object
+   
         const filterObj = {};
         if (filters.authorName) filterObj.authorName = { $regex: filters.authorName, $options: 'i' };
         if (filters.yearOfPublication) filterObj.yearOfPublication = Number(filters.yearOfPublication);
         if (filters.condition) filterObj.condition = filters.condition;
         if (filters.price) filterObj.price = Number(filters.price);
-        // Add more filters as needed
-
+   
         const comics = await ComicBook.find(filterObj)
             .sort({ [sortBy]: order === 'asc' ? 1 : -1 })
             .limit(Number(limit))
